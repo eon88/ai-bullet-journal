@@ -170,7 +170,10 @@ button,input,select{font:inherit}.app{min-height:100vh;display:grid;grid-templat
 (()=> {
 const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
 const map=$('map'), objectsLayer=$('objectsLayer'), handlesLayer=$('handlesLayer'), draftLayer=$('draftLayer'), calibrationLayer=$('calibrationLayer');
-const STORAGE='permaculture-homestead-designer-v2';
+const STORAGE='permaculture-homestead-designer-v2', DBNAME='homestead-designer-assets';
+function assetDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DBNAME,1);r.onupgradeneeded=()=>r.result.createObjectStore('assets');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function saveAsset(k,v){try{const db=await assetDB(),tx=db.transaction('assets','readwrite');tx.objectStore('assets').put(v,k)}catch(e){}}
+async function loadAsset(k){try{const db=await assetDB();return await new Promise((resolve,reject)=>{const r=db.transaction('assets').objectStore('assets').get(k);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)})}catch(e){return null}}
 let objects=[],history=[],selectedId=null,idSeq=0,tool='select',workMode='survey',draft=[],calibration=[],calibrating=false,measurePts=[],metresPerUnit=null;
 let world={w:1200,h:750}, view={x:0,y:0,w:1200,h:750}, panStart=null, imageRotation=0, baseImageData=null;
 
@@ -204,17 +207,17 @@ function snap(){
 function markSaved(msg='Saved locally'){ $('saveState').textContent=msg }
 function persist(){
   try{
-    const payload={objects,metresPerUnit,world,imageRotation,view,workMode,baseImageData:baseImageData&&baseImageData.length<3500000?baseImageData:null};
-    localStorage.setItem(STORAGE,JSON.stringify(payload));markSaved()
+    const payload={objects,metresPerUnit,world,imageRotation,view,workMode,calibration};
+    localStorage.setItem(STORAGE,JSON.stringify(payload));if(baseImageData)saveAsset('baseImage',baseImageData);markSaved()
   }catch(e){markSaved('Design saved; image too large to store locally')}
 }
 function scheduleSave(){markSaved('Saving…');clearTimeout(scheduleSave.t);scheduleSave.t=setTimeout(persist,250)}
 function restore(){
   try{
     const p=JSON.parse(localStorage.getItem(STORAGE)||'null');if(!p)return;
-    objects=p.objects||[];metresPerUnit=p.metresPerUnit||null;world=p.world||world;imageRotation=p.imageRotation||0;view=p.view||{x:0,y:0,w:world.w,h:world.h};workMode=p.workMode||'survey';baseImageData=p.baseImageData||null;
+    objects=p.objects||[];metresPerUnit=p.metresPerUnit||null;world=p.world||world;imageRotation=p.imageRotation||0;view=p.view||{x:0,y:0,w:world.w,h:world.h};workMode=p.workMode||'survey';calibration=p.calibration||[];
     idSeq=objects.reduce((m,o)=>Math.max(m,o.id||0),0);
-    if(baseImageData){$('photo').setAttribute('href',baseImageData);$('photo').style.display='block';$('demo').style.display='none'}
+    loadAsset('baseImage').then(img=>{if(img){baseImageData=img;$('photo').setAttribute('href',img);$('photo').style.display='block';$('demo').style.display='none'}});
     $('photo').setAttribute('width',world.w);$('photo').setAttribute('height',world.h);$('demo').setAttribute('transform','scale('+(world.w/1200)+' '+(world.h/750)+')');
     updateBaseRotation();setView();syncModeUI();render();drawCalibration();markSaved('Restored')
   }catch(e){}
@@ -342,7 +345,7 @@ map.addEventListener('wheel',e=>{e.preventDefault();const p=point(e);zoom(e.delt
 map.addEventListener('pointerdown',e=>{
   const p=point(e);
   if(tool==='pan'){panStart={clientX:e.clientX,clientY:e.clientY,x:view.x,y:view.y};map.setPointerCapture?.(e.pointerId);return}
-  if(calibrating){calibration.push(p);if(calibration.length===2){const d=Math.hypot(calibration[1].x-calibration[0].x,calibration[1].y-calibration[0].y),known=Math.max(.1,+$('known').value||10);metresPerUnit=known/Math.max(.001,d);$('scaleText').textContent='Reference '+known.toFixed(1)+' m ✓ · scale calibrated';calibrating=false;drawCalibration();objects.filter(o=>o.type==='boundary').forEach(calcArea);scheduleSave()}return}
+  if(calibrating){calibration.push(p);if(calibration.length===2){const d=Math.hypot(calibration[1].x-calibration[0].x,calibration[1].y-calibration[0].y),known=Math.max(.1,+$('known').value||10);metresPerUnit=known/Math.max(.001,d);$('scaleText').textContent='Reference '+known.toFixed(1)+' m ✓ · scale calibrated';calibrating=false;drawCalibration();objects.filter(o=>o.type==='boundary').forEach(calcArea);render();scheduleSave()}return}
   if(tool==='measure'){measurePts.push(p);if(measurePts.length===2){const d=Math.hypot(measurePts[1].x-measurePts[0].x,measurePts[1].y-measurePts[0].y);$('measureChip').textContent='Measure: '+(metresPerUnit?(d*metresPerUnit).toFixed(1)+' m':Math.round(d)+' units');measurePts=[]}return}
   if(['boundary','zone','garden','pond','path'].includes(tool)){startDrawing(tool,p);return}
   if(['tree','building'].includes(tool)){addSimple(tool,p);return}
@@ -359,8 +362,8 @@ $('calibrate').onclick=()=>{calibration=[];calibrationLayer.innerHTML='';calibra
 $('zoomIn').onclick=()=>zoom(.8);$('zoomOut').onclick=()=>zoom(1.25);$('fitView').onclick=fit;
 $('year').oninput=()=>{$('yearLabel').textContent='Year '+$('year').value;render()};
 $('imageOpacity').oninput=e=>$('baseRotate').style.opacity=e.target.value;
-$('rotateImage').onclick=()=>{if($('lockImage').checked){$('status').textContent='Unlock the base image before rotating it.';return}imageRotation=(imageRotation+90)%360;updateBaseRotation();scheduleSave()};
-$('resetImage').onclick=()=>{imageRotation=0;$('imageOpacity').value=1;$('baseRotate').style.opacity=1;updateBaseRotation();fit();scheduleSave()};
+$('rotateImage').onclick=()=>{if($('lockImage').checked){$('status').textContent='Unlock the base image before rotating it.';return}if(objects.length){$('status').textContent='Rotate the image before tracing objects, otherwise the design would lose alignment.';return}imageRotation=(imageRotation+90)%360;updateBaseRotation();scheduleSave()};
+$('resetImage').onclick=()=>{if(objects.length&&imageRotation!==0){$('status').textContent='Image rotation cannot be reset after objects have been traced.';return}imageRotation=0;$('imageOpacity').value=1;$('baseRotate').style.opacity=1;updateBaseRotation();fit();scheduleSave()};
 $('upload').onchange=e=>{
   const f=e.target.files?.[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{snap();baseImageData=reader.result;world={w:img.naturalWidth,h:img.naturalHeight};view={x:0,y:0,w:world.w,h:world.h};$('map').setAttribute('viewBox','0 0 '+world.w+' '+world.h);$('photo').setAttribute('href',baseImageData);$('photo').setAttribute('width',world.w);$('photo').setAttribute('height',world.h);$('photo').style.display='block';$('demo').style.display='none';objects=[];selectedId=null;metresPerUnit=null;calibration=[];calibrationLayer.innerHTML='';render();$('status').textContent='Image loaded. Calibrate scale, then survey the existing land.';persist()};img.src=reader.result};reader.readAsDataURL(f)
 };
