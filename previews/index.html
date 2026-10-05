@@ -21,8 +21,8 @@ button,input,select{font:inherit}.app{min-height:100vh;display:grid;grid-templat
 .floatbar{position:absolute;left:20px;bottom:20px;display:flex;gap:6px;z-index:5}.drawbar{position:absolute;top:20px;left:50%;transform:translateX(-50%);display:none;gap:7px;padding:7px;border:1px solid var(--line);background:#101a14e8;border-radius:10px;z-index:6}.drawbar.show{display:flex}
 .layer{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px}.hint{font-size:12px;color:var(--muted);line-height:1.45}.inspector{display:none}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .modeSwitch{display:grid;grid-template-columns:1fr 1fr;gap:6px}.modeSwitch .btn{text-align:center}
-.vertex{fill:#fff;stroke:#111;stroke-width:2;cursor:move}.selectedShape{filter:drop-shadow(0 0 4px #dfff9b)}.objlabel{font-size:16px;fill:#fff;stroke:#0d1511;stroke-width:5;paint-order:stroke;pointer-events:none}.calLine{stroke:#f4f269;stroke-width:4;stroke-dasharray:10 7}.calLabel{font-size:18px;fill:#ffffaa;stroke:#111;stroke-width:5;paint-order:stroke}
-.nudgepad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:7px}.nudgepad button{padding:7px}.precisionBox{margin-top:9px;padding:9px;border:1px solid var(--line);border-radius:9px;background:#132019}.precisionTitle{font-size:12px;font-weight:700;margin-bottom:6px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.metric{background:#15231b;border:1px solid var(--line);border-radius:8px;padding:8px}.metric small{display:block;color:var(--muted)}.metric b{font-size:16px}
+.vertex{fill:#fff;stroke:#111;stroke-width:2;cursor:move}.midpoint{fill:#17251d;stroke:#dfff9b;stroke-width:2;cursor:copy}.measureLabel{font-size:13px;fill:#f4f6df;stroke:#0b120e;stroke-width:4;paint-order:stroke;pointer-events:none}.selectedShape{filter:drop-shadow(0 0 4px #dfff9b)}.objlabel{font-size:16px;fill:#fff;stroke:#0d1511;stroke-width:5;paint-order:stroke;pointer-events:none}.calLine{stroke:#f4f269;stroke-width:4;stroke-dasharray:10 7}.calLabel{font-size:18px;fill:#ffffaa;stroke:#111;stroke-width:5;paint-order:stroke}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.metric{background:#15231b;border:1px solid var(--line);border-radius:8px;padding:8px}.metric small{display:block;color:var(--muted)}.metric b{font-size:16px}
 @media(max-width:1050px){.layout{grid-template-columns:160px minmax(0,1fr)}.right{position:fixed;left:0;right:0;bottom:0;z-index:30;border:1px solid var(--line);border-radius:16px 16px 0 0;max-height:56vh;transform:translateY(calc(100% - 48px));transition:.2s;background:#101a14}.right.open{transform:translateY(0)}.right .mobileHandle{display:block}.canvasbox{min-height:520px}}
 @media(min-width:1051px){.mobileHandle{display:none}}
 @media(max-width:700px){.top{align-items:flex-start}.layout{display:block}.side:first-child{border-right:0;border-bottom:1px solid var(--line)}.tools{grid-template-columns:repeat(4,1fr)}.tools .btn{font-size:12px;padding:8px 6px}.canvaswrap{padding:6px}.canvasbox{min-height:500px}.floatbar{left:12px;bottom:12px}.brand small{display:none}}
@@ -150,20 +150,8 @@ button,input,select{font:inherit}.app{min-height:100vh;display:grid;grid-templat
       <div class="field"><label>Height (m)</label><input id="heightField" type="number" min=".1" step=".1"></div>
     </div>
     <div class="field" id="rotationFieldWrap"><label>Rotation (°)</label><input id="rotationField" type="number" step="1" value="0"></div>
-    <div id="precisionFields" class="precisionBox" style="display:none">
-      <div class="precisionTitle">Fine tune geometry</div>
-      <div class="field"><label>Edit target</label><select id="editTarget"></select></div>
-      <div class="field"><label id="nudgeLabel">Nudge step</label><input id="nudgeStep" type="number" min=".01" step=".01" value=".10"></div>
-      <div class="nudgepad">
-        <span></span><button class="btn" data-nudge="up">↑</button><span></span>
-        <button class="btn" data-nudge="left">←</button><button class="btn" id="centerNudge">•</button><button class="btn" data-nudge="right">→</button>
-        <span></span><button class="btn" data-nudge="down">↓</button><span></span>
-      </div>
-      <div class="grid2" style="margin-top:7px">
-        <button class="btn" id="addVertex">+ Corner</button>
-        <button class="btn" id="removeVertex">− Corner</button>
-      </div>
-      <div id="geometryStats" class="hint" style="margin-top:7px"></div>
+    <div id="shapeHelp" class="hint" style="display:none;margin-top:8px;padding:8px;border:1px dashed var(--line);border-radius:8px">
+      Drag inside the shape to move it. Drag white corners to reshape. Drag a small green handle on an edge to create a new corner. Select a corner and press Delete to remove it.
     </div>
     <div class="grid2" style="margin-top:8px"><button class="btn" id="duplicateBtn">Duplicate</button><button class="btn danger" id="deleteBtn">Delete</button></div>
     <div id="info" class="hint" style="margin-top:9px"></div>
@@ -283,13 +271,46 @@ function centroid(o){
   return{x:o.points.reduce((s,p)=>s+p.x,0)/o.points.length,y:o.points.reduce((s,p)=>s+p.y,0)/o.points.length}
 }
 function renderHandles(){
-  handlesLayer.innerHTML='';if(tool!=='select')return;const o=objects.find(x=>x.id===selectedId);if(!o||!o.points)return;
-  o.points.forEach((p,i)=>{const c=document.createElementNS(NS,'circle');c.classList.add('vertex');c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);c.setAttribute('r',Math.max(5,view.w/180));c.dataset.index=i;
-    if(selectedVertex===i){c.setAttribute('fill','#efff73');c.setAttribute('stroke-width','4')}
-    c.addEventListener('pointerdown',e=>{e.stopPropagation();selectedVertex=i;snap();updateInspector();const move=ev=>{const q=point(ev);o.points[i]=q;render()};const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);scheduleSave()};window.addEventListener('pointermove',move);window.addEventListener('pointerup',up)});
-    c.addEventListener('click',e=>{e.stopPropagation();selectedVertex=i;render()});
-    handlesLayer.appendChild(c)
-  })
+  handlesLayer.innerHTML='';if(tool!=='select')return;
+  const o=objects.find(x=>x.id===selectedId);if(!o||!o.points?.length)return;
+  const handleR=Math.max(5,view.w/180), midR=Math.max(4,view.w/230), labelOffset=Math.max(10,view.w/120);
+
+  o.points.forEach((p,i)=>{
+    const v=document.createElementNS(NS,'circle');v.classList.add('vertex');v.setAttribute('cx',p.x);v.setAttribute('cy',p.y);v.setAttribute('r',handleR);
+    if(selectedVertex===i){v.setAttribute('fill','#efff73');v.setAttribute('stroke-width','4')}
+    v.addEventListener('pointerdown',e=>{
+      e.stopPropagation();selectedVertex=i;snap();
+      const move=ev=>{o.points[i]=point(ev);render()};
+      const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);scheduleSave()};
+      window.addEventListener('pointermove',move);window.addEventListener('pointerup',up)
+    });
+    v.addEventListener('click',e=>{e.stopPropagation();selectedVertex=i;render()});
+    handlesLayer.appendChild(v);
+  });
+
+  const edgeCount=o.kind==='polygon'?o.points.length:o.points.length-1;
+  for(let i=0;i<edgeCount;i++){
+    const j=(i+1)%o.points.length,a=o.points[i],b=o.points[j],mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+    const m=document.createElementNS(NS,'circle');m.classList.add('midpoint');m.setAttribute('cx',mx);m.setAttribute('cy',my);m.setAttribute('r',midR);
+    m.addEventListener('pointerdown',e=>{
+      e.stopPropagation();snap();
+      const inserted=i+1,np={x:mx,y:my};o.points.splice(inserted,0,np);selectedVertex=inserted;
+      const move=ev=>{o.points[inserted]=point(ev);render()};
+      const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);scheduleSave()};
+      window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);render()
+    });
+    handlesLayer.appendChild(m);
+
+    if(metresPerUnit){
+      const len=Math.hypot(b.x-a.x,b.y-a.y)*metresPerUnit;
+      const t=document.createElementNS(NS,'text');t.classList.add('measureLabel');t.setAttribute('x',mx);t.setAttribute('y',my-labelOffset);t.setAttribute('text-anchor','middle');t.textContent=len.toFixed(len<10?2:1)+' m';handlesLayer.appendChild(t)
+    }
+  }
+
+  if(o.kind==='polygon'&&metresPerUnit){
+    const center=centroid(o),a=polygonArea(o.points)*metresPerUnit*metresPerUnit;
+    const t=document.createElementNS(NS,'text');t.classList.add('measureLabel');t.setAttribute('x',center.x);t.setAttribute('y',center.y-labelOffset*1.5);t.setAttribute('text-anchor','middle');t.textContent=formatArea(a);handlesLayer.appendChild(t)
+  }
 }
 function objectPointerDown(e,o){
   if(tool!=='select')return;e.stopPropagation();
@@ -340,10 +361,6 @@ function calcArea(o){if(!o?.points||!metresPerUnit)return;$('areaChip').textCont
 function formatArea(a){return a>=10000?(a/10000).toFixed(2)+' ha':Math.round(a)+' m²'}
 function length(points){let d=0;for(let i=1;i<points.length;i++)d+=Math.hypot(points[i].x-points[i-1].x,points[i].y-points[i-1].y);return d}
 function polygonPerimeter(points){if(!points?.length)return 0;return length(points)+Math.hypot(points[0].x-points[points.length-1].x,points[0].y-points[points.length-1].y)}
-function unitsFromNudge(){
-  const raw=Math.max(.01,+$('nudgeStep').value||.1);
-  return metresPerUnit?raw/metresPerUnit:raw;
-}
 function geometryStatsText(o){
   if(!o?.points)return '';
   if(o.kind==='polygon'){
@@ -356,7 +373,7 @@ function geometryStatsText(o){
 function choose(t){
   tool=t;calibrating=false;measurePts=[];document.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('active',b.dataset.tool===t));
   if(t!=='select'){selectedId=null;selectedVertex=null;$('shapeChip').textContent='Selected: —';}
-  const msg={select:'Select and edit objects.',pan:'Drag the map to pan.',measure:'Click two points to measure.',boundary:'Click boundary corners, then Finish.',zone:'Draw a custom zone polygon, then Finish.',garden:'Draw the garden shape, then Finish.',pond:'Draw the pond shape, then Finish.',path:'Click along the path, then Finish.',tree:'Click to place a tree.',building:'Click to place a building.'}[t];
+  const msg={select:'Select an object. Drag it to move; drag its handles to reshape.',pan:'Drag the map to pan.',measure:'Click two points to measure.',boundary:'Click boundary corners, then Finish.',zone:'Draw a custom zone polygon, then Finish.',garden:'Draw the garden shape, then Finish.',pond:'Draw the pond shape, then Finish.',path:'Click along the path, then Finish.',tree:'Click to place a tree.',building:'Click to place a building.'}[t];
   $('status').textContent=msg;render()
 }
 function syncModeUI(){
@@ -376,14 +393,7 @@ function updateInspector(){
   const sized=['tree','building'].includes(o.type);$('sizeFields').style.display=sized?'grid':'none';$('rotationFieldWrap').style.display=o.type==='building'?'grid':'none';
   if(o.type==='tree'){$('widthField').previousElementSibling.textContent='Canopy diameter (m)';$('widthField').value=(o.radiusM||4)*2;$('heightField').parentElement.style.display='none'}
   else if(o.type==='building'){$('widthField').previousElementSibling.textContent='Width (m)';$('widthField').value=o.widthM||8;$('heightField').parentElement.style.display='grid';$('heightField').value=o.heightM||6;$('rotationField').value=o.rotation||0}
-  const precision=!!o.points;$('precisionFields').style.display=precision?'block':'none';
-  if(precision){
-    const target=$('editTarget');target.innerHTML='<option value="whole">Whole shape</option>'+o.points.map((p,i)=>'<option value="'+i+'">Corner '+(i+1)+'</option>').join('');
-    target.value=selectedVertex==null?'whole':String(selectedVertex);
-    $('nudgeLabel').textContent=metresPerUnit?'Nudge step (metres)':'Nudge step (canvas units)';
-    if(!$('nudgeStep').dataset.init){$('nudgeStep').value=metresPerUnit?'.10':'1';$('nudgeStep').dataset.init='1'}
-    $('geometryStats').textContent=geometryStatsText(o);
-  }
+  $('shapeHelp').style.display=o.points?'block':'none';
   let txt='Type: '+o.type+' · '+o.phase;
   if(o.points)txt+=' · '+geometryStatsText(o);
   $('info').textContent=txt;
@@ -433,24 +443,14 @@ $('rotationField').oninput=e=>{const o=objects.find(x=>x.id===selectedId);if(o?.
 $('deleteBtn').onclick=()=>{if(!selectedId)return;snap();objects=objects.filter(o=>o.id!==selectedId);selectedId=null;selectedVertex=null;render()};
 $('duplicateBtn').onclick=()=>{const o=objects.find(x=>x.id===selectedId);if(!o)return;snap();const n=JSON.parse(JSON.stringify(o));n.id=uid();n.name=o.name+' copy';if(n.x!=null){n.x+=20;n.y+=20}if(n.points)n.points=n.points.map(p=>({x:p.x+20,y:p.y+20}));objects.push(n);selectedId=n.id;selectedVertex=null;render()};
 $('undoBtn').onclick=()=>{if(!history.length)return;const p=JSON.parse(history.pop());objects=p.objects||[];metresPerUnit=p.metresPerUnit||null;world=p.world||world;imageRotation=p.imageRotation||0;view=p.view||view;workMode=p.workMode||workMode;selectedId=null;selectedVertex=null;syncModeUI();updateBaseRotation();setView();render();scheduleSave()};
-$('editTarget').onchange=e=>{selectedVertex=e.target.value==='whole'?null:+e.target.value;render()};
-document.querySelectorAll('[data-nudge]').forEach(b=>b.onclick=()=>{
-  const o=objects.find(x=>x.id===selectedId);if(!o?.points)return;snap();const d=unitsFromNudge();let dx=0,dy=0;
-  if(b.dataset.nudge==='up')dy=-d;if(b.dataset.nudge==='down')dy=d;if(b.dataset.nudge==='left')dx=-d;if(b.dataset.nudge==='right')dx=d;
-  if(selectedVertex==null)o.points=o.points.map(p=>({x:p.x+dx,y:p.y+dy}));else if(o.points[selectedVertex]){o.points[selectedVertex].x+=dx;o.points[selectedVertex].y+=dy}
-  render()
+document.addEventListener('keydown',e=>{
+  if((e.key==='Delete'||e.key==='Backspace')&&selectedVertex!=null){
+    const tag=(document.activeElement?.tagName||'').toLowerCase();if(tag==='input'||tag==='select'||tag==='textarea')return;
+    const o=objects.find(x=>x.id===selectedId);if(!o?.points)return;
+    const min=o.kind==='polygon'?3:2;if(o.points.length<=min){$('status').textContent='This shape needs at least '+min+' points.';return}
+    e.preventDefault();snap();o.points.splice(selectedVertex,1);selectedVertex=null;render()
+  }
 });
-$('centerNudge').onclick=()=>{selectedVertex=null;render()};
-$('addVertex').onclick=()=>{
-  const o=objects.find(x=>x.id===selectedId);if(!o?.points?.length)return;snap();
-  const i=selectedVertex==null?o.points.length-1:selectedVertex,j=(i+1)%o.points.length,a=o.points[i],b=o.points[j]||a;
-  const np={x:(a.x+b.x)/2,y:(a.y+b.y)/2};o.points.splice(i+1,0,np);selectedVertex=i+1;render()
-};
-$('removeVertex').onclick=()=>{
-  const o=objects.find(x=>x.id===selectedId);if(!o?.points||selectedVertex==null)return;
-  const min=o.kind==='polygon'?3:2;if(o.points.length<=min){$('status').textContent='This shape needs at least '+min+' points.';return}
-  snap();o.points.splice(selectedVertex,1);selectedVertex=Math.min(selectedVertex,o.points.length-1);render()
-};
 $('mobileHandle').onclick=()=>{$('rightPanel').classList.toggle('open');$('mobileHandle').textContent=$('rightPanel').classList.contains('open')?'Object inspector ▼':'Object inspector ▲'};
 window.addEventListener('beforeunload',persist);
 
