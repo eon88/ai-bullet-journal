@@ -1,32 +1,39 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Permaculture Homestead Designer</title>
 <style>
-:root{--bg:#0d1511;--panel:#142019;--panel2:#1a2a20;--line:#2e4135;--text:#edf5ef;--muted:#9fb3a5;--accent:#9bd177;--accent2:#4d8d5d;--soil:#a58a67;--water:#66aee8;--food:#d2b85a;--danger:#d96c6c}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0b120e,#101913 35%,#0d1511);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+:root{--bg:#0d1511;--panel:#111b15;--panel2:#16241c;--line:#304438;--text:#edf5ef;--muted:#9fb3a5;--accent:#9bd177;--water:#69afe8;--food:#d4bb5e;--soil:#bd9268;--danger:#d96c6c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 button,input,select{font:inherit}.app{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
-.topbar{display:flex;gap:18px;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(13,21,17,.93);backdrop-filter:blur(10px);position:sticky;top:0;z-index:5}
-.brand{display:flex;align-items:center;gap:10px}.logo{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#233a2b}.brand b{display:block}.brand span{font-size:12px;color:var(--muted)}
-.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#17251d;color:var(--text);padding:9px 12px;border-radius:9px;cursor:pointer}.btn:hover{border-color:#52715c}.btn.primary{background:var(--accent);color:#142019;border-color:var(--accent);font-weight:700}.layout{display:grid;grid-template-columns:190px minmax(0,1fr) 240px;min-height:0}
-.sidebar{padding:14px;border-right:1px solid var(--line);background:#101a14;overflow:auto}.rightbar{border-right:0;border-left:1px solid var(--line)}
-.label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800;margin:8px 0}.toolgrid{display:grid;gap:7px}.tool{width:100%;text-align:left;border:1px solid var(--line);background:#15231b;color:var(--text);padding:9px 10px;border-radius:9px;cursor:pointer}.tool.active{outline:2px solid var(--accent);background:#203527}.sep{height:1px;background:var(--line);margin:15px 0}.field{display:grid;gap:6px;margin-top:8px}.field input,.field select{width:100%;border:1px solid var(--line);background:#0f1913;color:var(--text);border-radius:8px;padding:8px}
-.stagewrap{display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-width:0;min-height:0;background:#0c130f}.stagehead{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);background:#111c16}.status{font-size:13px;color:#d6e5da}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{border:1px solid var(--line);padding:5px 8px;border-radius:999px;font-size:11px;color:var(--muted);background:#16241c}
-.canvasShell{padding:14px;min-height:0}.canvas{position:relative;width:100%;height:100%;min-height:560px;overflow:hidden;border:1px solid #2f4537;border-radius:14px;background:#768967}
-.demo{position:absolute;inset:0;width:100%;height:100%}.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:none;background:#111}
-.overlay{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}.metric{padding:12px;border-right:1px solid var(--line);background:#111b15}.metric:last-child{border-right:0}.metric small{display:block;color:var(--muted)}.metric strong{font-size:20px}
-.layer{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px}.hint{font-size:12px;color:var(--muted);line-height:1.45}.inspector{display:none}.nudge{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}.nudge button{border:1px solid var(--line);background:#17251d;color:var(--text);border-radius:7px;padding:7px;cursor:pointer}.delete{color:#ffd9d9!important;background:#3b2020!important}.footerhint{margin-top:14px;border:1px dashed #405847;border-radius:10px;padding:10px;color:var(--muted);font-size:12px}
-@media(max-width:1000px){.layout{grid-template-columns:150px minmax(0,1fr)}.rightbar{display:none}.canvas{min-height:500px}}
-@media(max-width:700px){.layout{display:block}.sidebar{border-right:0;border-bottom:1px solid var(--line)}.toolgrid{grid-template-columns:repeat(4,1fr)}.tool{font-size:12px;padding:8px}.canvasShell{padding:8px}.canvas{min-height:480px}.metrics{grid-template-columns:repeat(2,1fr)}.topbar{align-items:flex-start}.actions{justify-content:flex-end}}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 16px;background:#0f1913;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.brand{display:flex;gap:10px;align-items:center}.logo{width:36px;height:36px;border-radius:10px;background:#22372a;display:grid;place-items:center}.brand b{display:block}.brand small{color:var(--muted)}
+.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#17251d;color:var(--text);border-radius:9px;padding:8px 10px;cursor:pointer}.btn:hover{border-color:#63826e}.btn.primary{background:var(--accent);color:#102015;border-color:var(--accent);font-weight:700}.btn.active{outline:2px solid var(--accent);background:#203528}.btn.danger{background:#3a2020;color:#ffdede}
+.layout{display:grid;grid-template-columns:190px minmax(0,1fr) 255px;min-height:0}
+.side{background:#101a14;padding:12px;border-right:1px solid var(--line);overflow:auto}.right{border-right:0;border-left:1px solid var(--line)}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;margin:8px 0}.sep{height:1px;background:var(--line);margin:14px 0}.tools{display:grid;gap:6px}
+.field{display:grid;gap:5px;margin-top:8px}.field label{font-size:11px;color:var(--muted)}.field input,.field select{width:100%;border:1px solid var(--line);background:#0e1812;color:var(--text);padding:8px;border-radius:8px}
+.stage{min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr);background:#0b120e}.stagebar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);background:#111c16}.status{font-size:13px}.muted{color:var(--muted)}.chip{border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:11px;color:var(--muted);background:#16241c}
+.canvaswrap{padding:10px;min-height:0;position:relative}.canvasbox{position:relative;width:100%;height:100%;min-height:590px;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#151d18}
+#map{width:100%;height:100%;display:block;touch-action:none;background:#172019}
+.floatbar{position:absolute;left:20px;bottom:20px;display:flex;gap:6px;z-index:5}.drawbar{position:absolute;top:20px;left:50%;transform:translateX(-50%);display:none;gap:7px;padding:7px;border:1px solid var(--line);background:#101a14e8;border-radius:10px;z-index:6}.drawbar.show{display:flex}
+.layer{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px}.hint{font-size:12px;color:var(--muted);line-height:1.45}.inspector{display:none}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.modeSwitch{display:grid;grid-template-columns:1fr 1fr;gap:6px}.modeSwitch .btn{text-align:center}
+.vertex{fill:#fff;stroke:#111;stroke-width:2;cursor:move}.selectedShape{filter:drop-shadow(0 0 4px #dfff9b)}.objlabel{font-size:16px;fill:#fff;stroke:#0d1511;stroke-width:5;paint-order:stroke;pointer-events:none}.calLine{stroke:#f4f269;stroke-width:4;stroke-dasharray:10 7}.calLabel{font-size:18px;fill:#ffffaa;stroke:#111;stroke-width:5;paint-order:stroke}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.metric{background:#15231b;border:1px solid var(--line);border-radius:8px;padding:8px}.metric small{display:block;color:var(--muted)}.metric b{font-size:16px}
+@media(max-width:1050px){.layout{grid-template-columns:160px minmax(0,1fr)}.right{position:fixed;left:0;right:0;bottom:0;z-index:30;border:1px solid var(--line);border-radius:16px 16px 0 0;max-height:56vh;transform:translateY(calc(100% - 48px));transition:.2s;background:#101a14}.right.open{transform:translateY(0)}.right .mobileHandle{display:block}.canvasbox{min-height:520px}}
+@media(min-width:1051px){.mobileHandle{display:none}}
+@media(max-width:700px){.top{align-items:flex-start}.layout{display:block}.side:first-child{border-right:0;border-bottom:1px solid var(--line)}.tools{grid-template-columns:repeat(4,1fr)}.tools .btn{font-size:12px;padding:8px 6px}.canvaswrap{padding:6px}.canvasbox{min-height:500px}.floatbar{left:12px;bottom:12px}.brand small{display:none}}
 </style>
 </head>
 <body>
 <div class="app">
-<header class="topbar">
-  <div class="brand"><div class="logo">🌿</div><div><b>Permaculture Homestead Designer</b><span>2D land planning prototype</span></div></div>
-  <div class="actions">
+<header class="top">
+  <div class="brand"><div class="logo">🌿</div><div><b>Permaculture Homestead Designer</b><small>Survey the land, then design the future</small></div></div>
+  <div class="row">
+    <span id="saveState" class="muted" style="font-size:12px">Not saved</span>
     <label class="btn primary">Upload drone image<input id="upload" type="file" accept="image/*" hidden></label>
     <button class="btn" id="demoBtn">Demo terrain</button>
     <button class="btn" id="undoBtn">Undo</button>
@@ -34,60 +41,95 @@ button,input,select{font:inherit}.app{min-height:100vh;display:grid;grid-templat
 </header>
 
 <div class="layout">
-<aside class="sidebar">
-  <div class="label">Design tools</div>
-  <div class="toolgrid">
-    <button class="tool active" data-tool="select">↖ Select</button>
-    <button class="tool" data-tool="boundary">⬡ Boundary</button>
-    <button class="tool" data-tool="zone">◎ Zone</button>
-    <button class="tool" data-tool="tree">🌳 Tree</button>
-    <button class="tool" data-tool="garden">🥬 Garden</button>
-    <button class="tool" data-tool="pond">💧 Pond</button>
-    <button class="tool" data-tool="building">🏠 Building</button>
-    <button class="tool" data-tool="path">〰 Path</button>
+<aside class="side">
+  <div class="label">Working mode</div>
+  <div class="modeSwitch">
+    <button class="btn active" id="surveyMode">Survey</button>
+    <button class="btn" id="designMode">Design</button>
   </div>
+  <div class="hint" id="modeHelp" style="margin-top:7px">Trace what already exists on the property.</div>
+
   <div class="sep"></div>
-  <div class="label">Scale calibration</div>
-  <div class="field"><label class="hint">Known distance in metres</label><input id="known" type="number" min=".1" step=".1" value="10"></div>
-  <button class="btn" id="calibrate" style="width:100%;margin-top:8px">Mark 2 points</button>
-  <div id="scaleText" class="hint" style="margin-top:8px">Scale not calibrated.</div>
+  <div class="label">Tools</div>
+  <div class="tools">
+    <button class="btn active" data-tool="select">↖ Select</button>
+    <button class="btn" data-tool="pan">✋ Pan</button>
+    <button class="btn" data-tool="measure">📏 Measure</button>
+    <button class="btn" data-tool="boundary">⬡ Boundary</button>
+    <button class="btn" data-tool="zone">◎ Zone</button>
+    <button class="btn" data-tool="tree">🌳 Tree</button>
+    <button class="btn" data-tool="garden">🥬 Garden</button>
+    <button class="btn" data-tool="pond">💧 Pond</button>
+    <button class="btn" data-tool="building">🏠 Building</button>
+    <button class="btn" data-tool="path">〰 Path</button>
+  </div>
+
+  <div class="sep"></div>
+  <div class="label">Scale</div>
+  <div class="field"><label>Known distance (metres)</label><input id="known" type="number" min=".1" step=".1" value="10"></div>
+  <button class="btn" id="calibrate" style="width:100%;margin-top:7px">Calibrate with 2 points</button>
+  <div id="scaleText" class="hint" style="margin-top:7px">Not calibrated.</div>
+
   <div class="sep"></div>
   <div class="label">Timeline</div>
-  <input id="year" type="range" min="0" max="20" value="0" style="width:100%">
-  <div class="hint" style="display:flex;justify-content:space-between"><span>Now</span><span id="yearLabel">Year 0</span><span>20</span></div>
-  <div class="footerhint">Workflow: upload → calibrate → trace boundary → add existing features → design future systems → compare years.</div>
+  <input id="year" type="range" min="0" max="10" value="1" style="width:100%">
+  <div class="hint" style="display:flex;justify-content:space-between"><span>Now</span><span id="yearLabel">Year 1</span><span>10</span></div>
+
+  <div class="sep"></div>
+  <div class="label">Image</div>
+  <div class="field"><label>Opacity</label><input id="imageOpacity" type="range" min=".2" max="1" step=".05" value="1"></div>
+  <div class="grid2" style="margin-top:7px">
+    <button class="btn" id="rotateImage">↻ Rotate</button>
+    <button class="btn" id="resetImage">Reset</button>
+  </div>
+  <label class="layer"><input id="lockImage" type="checkbox" checked> Lock base image</label>
 </aside>
 
-<main class="stagewrap">
-  <div class="stagehead">
-    <div id="status" class="status">Select mode. Upload an image or start on the demo terrain.</div>
-    <div class="chips"><span class="chip">Existing + Planned</span><span id="areaChip" class="chip">Area: —</span></div>
+<main class="stage">
+  <div class="stagebar">
+    <div id="status" class="status">Survey mode. Upload an image or use the demo terrain.</div>
+    <div class="row"><span id="areaChip" class="chip">Area: —</span><span id="measureChip" class="chip">Measure: —</span></div>
   </div>
-  <div class="canvasShell">
-    <div class="canvas" id="canvas">
-      <svg class="demo" id="demo" viewBox="0 0 1200 750" preserveAspectRatio="none">
-        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b7bc90"/><stop offset="1" stop-color="#6d865f"/></linearGradient></defs>
-        <rect width="1200" height="750" fill="url(#g)"/>
-        <path d="M0 540 C180 430 340 560 520 480 S850 390 1200 465 V750 H0Z" fill="#839865"/>
-        <path d="M0 205 C210 150 375 255 545 205 S900 125 1200 190" fill="none" stroke="#c2ac82" stroke-width="46" opacity=".38"/>
-        <path d="M110 0 L330 750" stroke="#736753" stroke-width="35" opacity=".48"/>
-        <g fill="#58744e"><circle cx="940" cy="135" r="62"/><circle cx="1020" cy="180" r="55"/><circle cx="850" cy="215" r="70"/><circle cx="1080" cy="102" r="46"/><circle cx="790" cy="120" r="42"/></g>
-        <rect x="500" y="292" width="175" height="108" rx="7" fill="#b18c67" transform="rotate(-7 588 346)"/>
-        <rect x="540" y="320" width="92" height="45" rx="5" fill="#876e55" transform="rotate(-7 588 346)"/>
+
+  <div class="canvaswrap">
+    <div class="canvasbox" id="canvasBox">
+      <svg id="map" viewBox="0 0 1200 750" aria-label="Homestead design canvas">
+        <defs>
+          <linearGradient id="demoG" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b7bc90"/><stop offset="1" stop-color="#6d865f"/></linearGradient>
+        </defs>
+        <g id="baseRotate">
+          <g id="demo">
+            <rect width="1200" height="750" fill="url(#demoG)"/>
+            <path d="M0 540 C180 430 340 560 520 480 S850 390 1200 465 V750 H0Z" fill="#839865"/>
+            <path d="M0 205 C210 150 375 255 545 205 S900 125 1200 190" fill="none" stroke="#c2ac82" stroke-width="46" opacity=".38"/>
+            <path d="M110 0 L330 750" stroke="#736753" stroke-width="35" opacity=".48"/>
+            <g fill="#58744e"><circle cx="940" cy="135" r="62"/><circle cx="1020" cy="180" r="55"/><circle cx="850" cy="215" r="70"/><circle cx="1080" cy="102" r="46"/><circle cx="790" cy="120" r="42"/></g>
+            <rect x="500" y="292" width="175" height="108" rx="7" fill="#b18c67" transform="rotate(-7 588 346)"/>
+          </g>
+          <image id="photo" x="0" y="0" width="1200" height="750" preserveAspectRatio="none" style="display:none"/>
+        </g>
+        <g id="calibrationLayer"></g>
+        <g id="objectsLayer"></g>
+        <g id="draftLayer"></g>
+        <g id="handlesLayer"></g>
       </svg>
-      <img id="photo" class="photo" alt="Uploaded overhead property image">
-      <svg id="overlay" class="overlay" viewBox="0 0 1200 750"></svg>
+
+      <div class="drawbar" id="drawbar">
+        <button class="btn primary" id="finishDraw">Finish</button>
+        <button class="btn" id="cancelDraw">Cancel</button>
+      </div>
+
+      <div class="floatbar">
+        <button class="btn" id="zoomIn">＋</button>
+        <button class="btn" id="zoomOut">−</button>
+        <button class="btn" id="fitView">Fit</button>
+      </div>
     </div>
-  </div>
-  <div class="metrics">
-    <div class="metric"><small>Objects</small><strong id="count">0</strong></div>
-    <div class="metric"><small>Trees</small><strong id="trees">0</strong></div>
-    <div class="metric"><small>Water</small><strong id="ponds">0 ponds</strong></div>
-    <div class="metric"><small>Garden</small><strong id="gardens">0 beds</strong></div>
   </div>
 </main>
 
-<aside class="sidebar rightbar">
+<aside class="side right" id="rightPanel">
+  <button class="btn mobileHandle" id="mobileHandle" style="width:100%;margin-bottom:8px">Object inspector ▲</button>
   <div class="label">Layers</div>
   <label class="layer"><input class="layerCheck" type="checkbox" data-layer="boundary" checked> Boundary</label>
   <label class="layer"><input class="layerCheck" type="checkbox" data-layer="zones" checked> Zones</label>
@@ -99,53 +141,242 @@ button,input,select{font:inherit}.app{min-height:100vh;display:grid;grid-templat
 
   <div class="sep"></div>
   <div class="label">Selected object</div>
-  <div id="empty" class="hint">Click an object to inspect and move it.</div>
+  <div id="empty" class="hint">Select an object to edit it.</div>
   <div id="inspector" class="inspector">
-    <div class="field"><label class="hint">Name</label><input id="nameField"></div>
-    <div class="field"><label class="hint">Phase</label><select id="phaseField"><option>Existing</option><option>Year 1</option><option>Year 3</option><option>Year 5</option><option>Year 10</option></select></div>
-    <div class="nudge"><span></span><button data-move="up">↑</button><span></span><button data-move="left">←</button><button id="deleteBtn" class="delete">×</button><button data-move="right">→</button><span></span><button data-move="down">↓</button><span></span></div>
-    <div id="info" class="hint" style="margin-top:10px"></div>
+    <div class="field"><label>Name</label><input id="nameField"></div>
+    <div class="field"><label>Phase</label><select id="phaseField"><option>Existing</option><option>Year 1</option><option>Year 3</option><option>Year 5</option><option>Year 10</option></select></div>
+    <div id="sizeFields" class="grid2" style="margin-top:7px">
+      <div class="field"><label>Width (m)</label><input id="widthField" type="number" min=".1" step=".1"></div>
+      <div class="field"><label>Height (m)</label><input id="heightField" type="number" min=".1" step=".1"></div>
+    </div>
+    <div class="field" id="rotationFieldWrap"><label>Rotation (°)</label><input id="rotationField" type="number" step="1" value="0"></div>
+    <div class="grid2" style="margin-top:8px"><button class="btn" id="duplicateBtn">Duplicate</button><button class="btn danger" id="deleteBtn">Delete</button></div>
+    <div id="info" class="hint" style="margin-top:9px"></div>
   </div>
 
   <div class="sep"></div>
-  <div class="label">Later intelligence</div>
-  <div class="hint">☀ Sun & shade analysis<br>〽 Contours & slope<br>💧 Water-flow simulation<br>🌱 Plant guild suggestions<br>📦 Yield estimates<br>⚡ Energy planning<br>🤖 AI design critique</div>
+  <div class="label">Project summary</div>
+  <div class="metrics">
+    <div class="metric"><small>Existing</small><b id="existingCount">0</b></div>
+    <div class="metric"><small>Planned</small><b id="plannedCount">0</b></div>
+    <div class="metric"><small>Trees</small><b id="treeCount">0</b></div>
+  </div>
+  <div class="hint" style="margin-top:9px">This panel now shows project information only. Simulation, yields and AI advice will be added after the drawing workflow is reliable.</div>
 </aside>
 </div>
 </div>
 
 <script>
 (()=> {
-const overlay=document.getElementById('overlay'), status=document.getElementById('status'), ns='http://www.w3.org/2000/svg';
-const objects=[], history=[]; let id=0,tool='select',selected=null,draft=[],calibrating=false,calibration=[],metresPerUnit=null;
-const cfg={tree:{layer:'plants',shape:'circle',size:23,label:'Tree'},garden:{layer:'food',shape:'rect',size:50,label:'Garden bed'},pond:{layer:'water',shape:'ellipse',size:44,label:'Pond'},building:{layer:'structures',shape:'rect',size:60,label:'Building'},zone:{layer:'zones',shape:'circle',size:94,label:'Zone'}};
+const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
+const map=$('map'), objectsLayer=$('objectsLayer'), handlesLayer=$('handlesLayer'), draftLayer=$('draftLayer'), calibrationLayer=$('calibrationLayer');
+const STORAGE='permaculture-homestead-designer-v2';
+let objects=[],history=[],selectedId=null,idSeq=0,tool='select',workMode='survey',draft=[],calibration=[],calibrating=false,measurePts=[],metresPerUnit=null;
+let world={w:1200,h:750}, view={x:0,y:0,w:1200,h:750}, panStart=null, imageRotation=0, baseImageData=null;
+
+const cfg={
+ tree:{layer:'plants',kind:'point',label:'Tree',fill:'#78b869'},
+ building:{layer:'structures',kind:'rect',label:'Building',fill:'#c69a70'},
+ boundary:{layer:'boundary',kind:'polygon',label:'Property boundary',fill:'#8dd27c'},
+ zone:{layer:'zones',kind:'polygon',label:'Zone',fill:'#8bc97d'},
+ garden:{layer:'food',kind:'polygon',label:'Garden',fill:'#d4bb5e'},
+ pond:{layer:'water',kind:'polygon',label:'Pond',fill:'#67afe8'},
+ path:{layer:'access',kind:'line',label:'Path',fill:'#d1b07e'}
+};
 const phaseYear={'Existing':0,'Year 1':1,'Year 3':3,'Year 5':5,'Year 10':10};
-function pt(e){const r=overlay.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*1200,y:(e.clientY-r.top)/r.height*750}}
-function snapshot(){history.push(JSON.stringify(objects.map(o=>({id:o.id,type:o.type,layer:o.layer,x:o.x,y:o.y,name:o.name,phase:o.phase,points:o.points||null}))));if(history.length>40)history.shift()}
-function metrics(){count.textContent=objects.length;trees.textContent=objects.filter(o=>o.type==='tree').length;ponds.textContent=objects.filter(o=>o.type==='pond').length+' ponds';gardens.textContent=objects.filter(o=>o.type==='garden').length+' beds'}
-function setPos(o){o.el.setAttribute('transform','translate('+o.x+' '+o.y+')')}
-function styleShape(s,o){const colors={plants:'#79b86a',food:'#d2b85a',water:'#66aee8',structures:'#c69c73',zones:'#88c97a'};s.setAttribute('fill',colors[o.layer]||'#8bc67c');s.setAttribute('stroke','#eff7f0');s.setAttribute('stroke-width','2');s.setAttribute('fill-opacity',o.type==='zone'?'.18':'.8');if(o.type==='zone')s.setAttribute('stroke-dasharray','10 8')}
-function addObject(type,x,y,opts={}){snapshot();const c=cfg[type],o={id:++id,type,layer:c.layer,x,y,name:opts.name||c.label+' '+id,phase:opts.phase||'Year 1'};const g=document.createElementNS(ns,'g');o.el=g;g.dataset.layer=o.layer;g.dataset.object=o.id;g.setAttribute('tabindex','0');let s;if(c.shape==='rect'){s=document.createElementNS(ns,'rect');s.setAttribute('x',-c.size);s.setAttribute('y',-c.size*.6);s.setAttribute('width',c.size*2);s.setAttribute('height',c.size*1.2);s.setAttribute('rx','8')}else if(c.shape==='ellipse'){s=document.createElementNS(ns,'ellipse');s.setAttribute('rx',c.size*1.3);s.setAttribute('ry',c.size*.75)}else{s=document.createElementNS(ns,'circle');s.setAttribute('r',c.size)}styleShape(s,o);g.appendChild(s);const t=document.createElementNS(ns,'text');t.textContent=o.name;t.setAttribute('text-anchor','middle');t.setAttribute('y',c.size+20);t.setAttribute('font-size','17');t.setAttribute('fill','#f5fbf6');t.setAttribute('stroke','#101913');t.setAttribute('stroke-width','5');t.setAttribute('paint-order','stroke');g.appendChild(t);setPos(o);g.addEventListener('pointerdown',e=>dragStart(e,o));g.addEventListener('click',e=>{e.stopPropagation();select(o)});overlay.appendChild(g);objects.push(o);select(o);metrics();applyLayers();applyTimeline()}
-function addLine(type,pts){if(pts.length<2)return;snapshot();const layer=type==='boundary'?'boundary':'access',o={id:++id,type,layer,x:0,y:0,name:type==='boundary'?'Property boundary':'Path',phase:'Existing',points:[...pts]};const g=document.createElementNS(ns,'g');o.el=g;g.dataset.layer=layer;g.dataset.object=o.id;const p=document.createElementNS(ns,type==='boundary'?'polygon':'polyline');p.setAttribute('points',pts.map(q=>q.x+','+q.y).join(' '));p.setAttribute('fill',type==='boundary'?'#89cd79':'none');p.setAttribute('fill-opacity',type==='boundary'?'.08':'0');p.setAttribute('stroke',type==='boundary'?'#9cdf89':'#d0b081');p.setAttribute('stroke-width',type==='boundary'?'5':'12');p.setAttribute('stroke-linejoin','round');p.setAttribute('stroke-linecap','round');if(type==='boundary')p.setAttribute('stroke-dasharray','12 8');g.appendChild(p);g.addEventListener('click',e=>{e.stopPropagation();select(o)});overlay.appendChild(g);objects.push(o);select(o);metrics();area(o);applyLayers();applyTimeline()}
-function area(o){if(o.type!=='boundary'||!metresPerUnit)return;let a=0;for(let i=0,j=o.points.length-1;i<o.points.length;j=i++)a+=o.points[j].x*o.points[i].y-o.points[i].x*o.points[j].y;a=Math.abs(a/2)*metresPerUnit*metresPerUnit;areaChip.textContent='Area: '+(a>=10000?(a/10000).toFixed(2)+' ha':Math.round(a)+' m²')}
-function select(o){if(selected&&selected.el.firstElementChild)selected.el.firstElementChild.setAttribute('stroke-width','2');selected=o;empty.style.display=o?'none':'block';inspector.style.display=o?'block':'none';if(!o)return;if(o.el.firstElementChild)o.el.firstElementChild.setAttribute('stroke-width','5');nameField.value=o.name;phaseField.value=o.phase;info.textContent='Type: '+o.type+(metresPerUnit?' · positioned on calibrated land':'')}
-function dragStart(e,o){if(tool!=='select'||o.points)return;e.stopPropagation();select(o);const s=pt(e),ox=o.x,oy=o.y;function mv(ev){const q=pt(ev);o.x=Math.max(0,Math.min(1200,ox+q.x-s.x));o.y=Math.max(0,Math.min(750,oy+q.y-s.y));setPos(o)}function up(){window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up)}window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up)}
-function choose(t){tool=t;calibrating=false;draft=[];document.querySelectorAll('.tool').forEach(b=>b.classList.toggle('active',b.dataset.tool===t));status.textContent=t==='select'?'Select and move objects.':(t==='boundary'||t==='path'?'Click points to draw '+t+'; double-click to finish.':'Click the land to place '+t+'.')}
-function applyLayers(){document.querySelectorAll('.layerCheck').forEach(c=>overlay.querySelectorAll('[data-layer="'+c.dataset.layer+'"]').forEach(n=>n.style.display=c.checked?'':'none'))}
-function applyTimeline(){const y=+year.value;yearLabel.textContent='Year '+y;objects.forEach(o=>{const py=phaseYear[o.phase]??0;o.el.style.opacity=py<=y?'1':'.15';if(o.type==='tree'){const s=Math.max(.45,Math.min(1.85,.55+y*.065));o.el.setAttribute('transform','translate('+o.x+' '+o.y+') scale('+s+')')}else if(!o.points)setPos(o)})}
-document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>choose(b.dataset.tool));
-overlay.addEventListener('click',e=>{if(e.target.closest('[data-object]'))return;const q=pt(e);if(calibrating){calibration.push(q);const c=document.createElementNS(ns,'circle');c.setAttribute('cx',q.x);c.setAttribute('cy',q.y);c.setAttribute('r','8');c.setAttribute('fill','#efff73');c.dataset.cal='1';overlay.appendChild(c);if(calibration.length===2){const known=Math.max(.1,+document.getElementById('known').value||10),d=Math.hypot(calibration[1].x-calibration[0].x,calibration[1].y-calibration[0].y);metresPerUnit=known/Math.max(.01,d);scaleText.textContent='Scale calibrated: '+metresPerUnit.toFixed(3)+' m per canvas unit';status.textContent='Scale calibrated. Trace your property boundary next.';calibrating=false}return}if(tool==='select'){select(null);return}if(tool==='boundary'||tool==='path'){draft.push(q);const c=document.createElementNS(ns,'circle');c.setAttribute('cx',q.x);c.setAttribute('cy',q.y);c.setAttribute('r','6');c.setAttribute('fill','#efff73');c.dataset.draft='1';overlay.appendChild(c);return}addObject(tool,q.x,q.y)});
-overlay.addEventListener('dblclick',e=>{if((tool==='boundary'||tool==='path')&&draft.length>=2){overlay.querySelectorAll('[data-draft]').forEach(n=>n.remove());addLine(tool,draft);draft=[];choose('select');e.preventDefault()}});
-calibrate.onclick=()=>{overlay.querySelectorAll('[data-cal]').forEach(n=>n.remove());calibration=[];calibrating=true;tool='select';document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));status.textContent='Calibration mode: click two points with a known distance.'};
-document.querySelectorAll('.layerCheck').forEach(c=>c.onchange=applyLayers);year.oninput=applyTimeline;
-nameField.oninput=e=>{if(!selected)return;selected.name=e.target.value||selected.type;const t=selected.el.querySelector('text');if(t)t.textContent=selected.name};
-phaseField.onchange=e=>{if(!selected)return;selected.phase=e.target.value;applyTimeline()};
-document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{if(!selected||selected.points)return;const d=12;if(b.dataset.move==='up')selected.y-=d;if(b.dataset.move==='down')selected.y+=d;if(b.dataset.move==='left')selected.x-=d;if(b.dataset.move==='right')selected.x+=d;selected.x=Math.max(0,Math.min(1200,selected.x));selected.y=Math.max(0,Math.min(750,selected.y));setPos(selected);applyTimeline()});
-deleteBtn.onclick=()=>{if(!selected)return;snapshot();selected.el.remove();const i=objects.indexOf(selected);if(i>=0)objects.splice(i,1);select(null);metrics()};
-undoBtn.onclick=()=>{if(!history.length)return;const snap=JSON.parse(history.pop());objects.splice(0).forEach(o=>o.el.remove());id=0;const oldHistory=history.slice();snap.forEach(o=>o.points?addLine(o.type,o.points):addObject(o.type,o.x,o.y,{name:o.name,phase:o.phase}));history.splice(0,history.length,...oldHistory);select(null);metrics();status.textContent='Last change undone.'};
-upload.onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{photo.src=r.result;photo.style.display='block';demo.style.display='none';status.textContent='Drone image loaded. Calibrate the scale next.'};r.readAsDataURL(f)};
-demoBtn.onclick=()=>{photo.style.display='none';demo.style.display='block';status.textContent='Demo terrain loaded.'};
-choose('select');metrics();applyTimeline();
+
+function uid(){return ++idSeq}
+function currentPhase(){return workMode==='survey'?'Existing':'Year 1'}
+function point(evt){
+  const r=map.getBoundingClientRect();
+  return {x:view.x+(evt.clientX-r.left)/r.width*view.w,y:view.y+(evt.clientY-r.top)/r.height*view.h};
+}
+function setView(){map.setAttribute('viewBox',view.x+' '+view.y+' '+view.w+' '+view.h)}
+function fit(){view={x:0,y:0,w:world.w,h:world.h};setView()}
+function zoom(factor,cx=view.x+view.w/2,cy=view.y+view.h/2){
+  const nw=Math.max(world.w*.08,Math.min(world.w*4,view.w*factor)), nh=nw*(world.h/world.w);
+  view={x:cx-(cx-view.x)*nw/view.w,y:cy-(cy-view.y)*nh/view.h,w:nw,h:nh};setView()
+}
+function snap(){
+  history.push(JSON.stringify({objects,metresPerUnit,world,imageRotation,view,workMode}));
+  if(history.length>40)history.shift()
+}
+function markSaved(msg='Saved locally'){ $('saveState').textContent=msg }
+function persist(){
+  try{
+    const payload={objects,metresPerUnit,world,imageRotation,view,workMode,baseImageData:baseImageData&&baseImageData.length<3500000?baseImageData:null};
+    localStorage.setItem(STORAGE,JSON.stringify(payload));markSaved()
+  }catch(e){markSaved('Design saved; image too large to store locally')}
+}
+function scheduleSave(){markSaved('Saving…');clearTimeout(scheduleSave.t);scheduleSave.t=setTimeout(persist,250)}
+function restore(){
+  try{
+    const p=JSON.parse(localStorage.getItem(STORAGE)||'null');if(!p)return;
+    objects=p.objects||[];metresPerUnit=p.metresPerUnit||null;world=p.world||world;imageRotation=p.imageRotation||0;view=p.view||{x:0,y:0,w:world.w,h:world.h};workMode=p.workMode||'survey';baseImageData=p.baseImageData||null;
+    idSeq=objects.reduce((m,o)=>Math.max(m,o.id||0),0);
+    if(baseImageData){$('photo').setAttribute('href',baseImageData);$('photo').style.display='block';$('demo').style.display='none'}
+    $('photo').setAttribute('width',world.w);$('photo').setAttribute('height',world.h);$('demo').setAttribute('transform','scale('+(world.w/1200)+' '+(world.h/750)+')');
+    updateBaseRotation();setView();syncModeUI();render();drawCalibration();markSaved('Restored')
+  }catch(e){}
+}
+function render(){
+  objectsLayer.innerHTML='';
+  const y=+$('year').value;
+  const checks={};document.querySelectorAll('.layerCheck').forEach(c=>checks[c.dataset.layer]=c.checked);
+  for(const o of objects){
+    const g=document.createElementNS(NS,'g');g.dataset.id=o.id;g.dataset.layer=o.layer;g.style.display=checks[o.layer]===false?'none':'';
+    const py=phaseYear[o.phase]??0;g.style.opacity=py<=y?'1':'.22';
+    const selected=o.id===selectedId;
+    if(tool!=='select') g.style.pointerEvents='none';
+    let shape;
+    if(o.kind==='point'){
+      shape=document.createElementNS(NS,'circle');shape.setAttribute('cx',o.x);shape.setAttribute('cy',o.y);
+      const r=metresPerUnit?Math.max(4,(o.radiusM||4)/metresPerUnit):18;shape.setAttribute('r',r);
+      shape.setAttribute('fill',o.fill);shape.setAttribute('fill-opacity','.82');shape.setAttribute('stroke','#fff');shape.setAttribute('stroke-width',selected?'5':'2');
+    }else if(o.kind==='rect'){
+      shape=document.createElementNS(NS,'rect');
+      const w=metresPerUnit?(o.widthM||8)/metresPerUnit:100,h=metresPerUnit?(o.heightM||6)/metresPerUnit:70;
+      shape.setAttribute('x',o.x-w/2);shape.setAttribute('y',o.y-h/2);shape.setAttribute('width',w);shape.setAttribute('height',h);shape.setAttribute('rx','5');
+      shape.setAttribute('transform','rotate('+(o.rotation||0)+' '+o.x+' '+o.y+')');
+      shape.setAttribute('fill',o.fill);shape.setAttribute('fill-opacity','.8');shape.setAttribute('stroke','#fff');shape.setAttribute('stroke-width',selected?'5':'2');
+    }else{
+      shape=document.createElementNS(NS,o.kind==='polygon'?'polygon':'polyline');
+      shape.setAttribute('points',(o.points||[]).map(p=>p.x+','+p.y).join(' '));
+      shape.setAttribute('fill',o.kind==='polygon'?o.fill:'none');shape.setAttribute('fill-opacity',o.kind==='polygon'?'.18':'0');
+      shape.setAttribute('stroke',o.fill);shape.setAttribute('stroke-width',selected?'6':'4');shape.setAttribute('stroke-linejoin','round');shape.setAttribute('stroke-linecap','round');
+      if(o.type==='boundary')shape.setAttribute('stroke-dasharray','12 8');
+      if(tool!=='select')shape.style.pointerEvents='none';
+    }
+    if(selected)shape.classList.add('selectedShape');
+    g.appendChild(shape);
+    if(o.kind!=='line'){
+      const t=document.createElementNS(NS,'text');t.classList.add('objlabel');t.textContent=o.name;
+      const c=centroid(o);t.setAttribute('x',c.x);t.setAttribute('y',c.y+18);t.setAttribute('text-anchor','middle');g.appendChild(t);
+    }
+    g.addEventListener('pointerdown',e=>objectPointerDown(e,o));
+    g.addEventListener('click',e=>{if(tool==='select'){e.stopPropagation();select(o.id)}});
+    objectsLayer.appendChild(g);
+  }
+  renderHandles();updateSummary();updateInspector();scheduleSave();
+}
+function centroid(o){
+  if(o.kind==='point'||o.kind==='rect')return{x:o.x,y:o.y};
+  if(!o.points?.length)return{x:0,y:0};
+  return{x:o.points.reduce((s,p)=>s+p.x,0)/o.points.length,y:o.points.reduce((s,p)=>s+p.y,0)/o.points.length}
+}
+function renderHandles(){
+  handlesLayer.innerHTML='';if(tool!=='select')return;const o=objects.find(x=>x.id===selectedId);if(!o||!o.points)return;
+  o.points.forEach((p,i)=>{const c=document.createElementNS(NS,'circle');c.classList.add('vertex');c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);c.setAttribute('r',Math.max(5,view.w/180));c.dataset.index=i;
+    c.addEventListener('pointerdown',e=>{e.stopPropagation();snap();const move=ev=>{const q=point(ev);o.points[i]=q;render()};const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);scheduleSave()};window.addEventListener('pointermove',move);window.addEventListener('pointerup',up)});
+    handlesLayer.appendChild(c)
+  })
+}
+function objectPointerDown(e,o){
+  if(tool!=='select'||!['point','rect'].includes(o.kind))return;e.stopPropagation();select(o.id);snap();const s=point(e),ox=o.x,oy=o.y;
+  const move=ev=>{const q=point(ev);o.x=ox+q.x-s.x;o.y=oy+q.y-s.y;render()};
+  const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);scheduleSave()};
+  window.addEventListener('pointermove',move);window.addEventListener('pointerup',up)
+}
+function select(id){selectedId=id;render();if(innerWidth<=1050&&id)$('rightPanel').classList.add('open')}
+function addSimple(type,p){
+  snap();const c=cfg[type];
+  const o={id:uid(),type,kind:c.kind,layer:c.layer,name:c.label+' '+idSeq,phase:currentPhase(),fill:c.fill,x:p.x,y:p.y};
+  if(type==='tree')o.radiusM=4;if(type==='building'){o.widthM=8;o.heightM=6;o.rotation=0}
+  objects.push(o);selectedId=o.id;render()
+}
+function startDrawing(type,p){
+  if(!draft.length){draft=[p];$('drawbar').classList.add('show')}else draft.push(p);
+  renderDraft(type)
+}
+function renderDraft(type){
+  draftLayer.innerHTML='';if(!draft.length)return;const kind=cfg[type]?.kind||type;
+  const shape=document.createElementNS(NS,kind==='line'?'polyline':'polygon');shape.setAttribute('points',draft.map(p=>p.x+','+p.y).join(' '));shape.setAttribute('fill',kind==='polygon'?'#dfff9b22':'none');shape.setAttribute('stroke','#efff73');shape.setAttribute('stroke-width','4');shape.setAttribute('stroke-dasharray','8 6');draftLayer.appendChild(shape);
+  draft.forEach(p=>{const c=document.createElementNS(NS,'circle');c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);c.setAttribute('r',6);c.setAttribute('fill','#efff73');draftLayer.appendChild(c)})
+}
+function finishDrawing(){
+  if(!draft.length)return;const min=tool==='path'?2:3;if(draft.length<min){$('status').textContent='Add at least '+min+' points before finishing.';return}
+  snap();const c=cfg[tool],o={id:uid(),type:tool,kind:c.kind,layer:c.layer,name:c.label+(tool==='boundary'?'':' '+idSeq),phase:currentPhase(),fill:c.fill,points:[...draft]};
+  objects.push(o);draft=[];draftLayer.innerHTML='';$('drawbar').classList.remove('show');selectedId=o.id;choose('select');render();if(o.type==='boundary')calcArea(o)
+}
+function cancelDrawing(){draft=[];draftLayer.innerHTML='';$('drawbar').classList.remove('show');choose('select')}
+function polygonArea(points){let a=0;for(let i=0,j=points.length-1;i<points.length;j=i++)a+=points[j].x*points[i].y-points[i].x*points[j].y;return Math.abs(a/2)}
+function calcArea(o){if(!o?.points||!metresPerUnit)return;$('areaChip').textContent='Area: '+formatArea(polygonArea(o.points)*metresPerUnit*metresPerUnit)}
+function formatArea(a){return a>=10000?(a/10000).toFixed(2)+' ha':Math.round(a)+' m²'}
+function length(points){let d=0;for(let i=1;i<points.length;i++)d+=Math.hypot(points[i].x-points[i-1].x,points[i].y-points[i-1].y);return d}
+function choose(t){
+  tool=t;calibrating=false;measurePts=[];document.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('active',b.dataset.tool===t));
+  if(t!=='select')selectedId=null;
+  const msg={select:'Select and edit objects.',pan:'Drag the map to pan.',measure:'Click two points to measure.',boundary:'Click boundary corners, then Finish.',zone:'Draw a custom zone polygon, then Finish.',garden:'Draw the garden shape, then Finish.',pond:'Draw the pond shape, then Finish.',path:'Click along the path, then Finish.',tree:'Click to place a tree.',building:'Click to place a building.'}[t];
+  $('status').textContent=msg;render()
+}
+function syncModeUI(){
+  $('surveyMode').classList.toggle('active',workMode==='survey');$('designMode').classList.toggle('active',workMode==='design');
+  $('modeHelp').textContent=workMode==='survey'?'Trace what already exists on the property.':'Add future systems and assign them to development phases.'
+}
+function setMode(m){workMode=m;syncModeUI();choose('select');scheduleSave()}
+function updateSummary(){
+  $('existingCount').textContent=objects.filter(o=>o.phase==='Existing').length;
+  $('plannedCount').textContent=objects.filter(o=>o.phase!=='Existing').length;
+  $('treeCount').textContent=objects.filter(o=>o.type==='tree').length
+}
+function updateInspector(){
+  const o=objects.find(x=>x.id===selectedId);$('empty').style.display=o?'none':'block';$('inspector').style.display=o?'block':'none';if(!o)return;
+  $('nameField').value=o.name;$('phaseField').value=o.phase;
+  const sized=['tree','building'].includes(o.type);$('sizeFields').style.display=sized?'grid':'none';$('rotationFieldWrap').style.display=o.type==='building'?'grid':'none';
+  if(o.type==='tree'){$('widthField').previousElementSibling.textContent='Canopy diameter (m)';$('widthField').value=(o.radiusM||4)*2;$('heightField').parentElement.style.display='none'}
+  else{$('widthField').previousElementSibling.textContent='Width (m)';$('widthField').value=o.widthM||8;$('heightField').parentElement.style.display='grid';$('heightField').value=o.heightM||6;$('rotationField').value=o.rotation||0}
+  let txt='Type: '+o.type+' · '+o.phase;
+  if(o.points&&metresPerUnit){if(o.kind==='polygon')txt+=' · '+formatArea(polygonArea(o.points)*metresPerUnit*metresPerUnit);else txt+=' · '+(length(o.points)*metresPerUnit).toFixed(1)+' m'}
+  $('info').textContent=txt
+}
+function updateBaseRotation(){
+  const cx=world.w/2,cy=world.h/2;$('baseRotate').setAttribute('transform','rotate('+imageRotation+' '+cx+' '+cy+')')
+}
+function drawCalibration(){
+  calibrationLayer.innerHTML='';if(calibration.length!==2)return;const [a,b]=calibration;
+  const line=document.createElementNS(NS,'line');line.classList.add('calLine');line.setAttribute('x1',a.x);line.setAttribute('y1',a.y);line.setAttribute('x2',b.x);line.setAttribute('y2',b.y);calibrationLayer.appendChild(line);
+  const t=document.createElementNS(NS,'text');t.classList.add('calLabel');t.setAttribute('x',(a.x+b.x)/2);t.setAttribute('y',(a.y+b.y)/2-10);t.setAttribute('text-anchor','middle');t.textContent=(+$('known').value||10).toFixed(1)+' m';calibrationLayer.appendChild(t)
+}
+
+map.addEventListener('wheel',e=>{e.preventDefault();const p=point(e);zoom(e.deltaY>0?1.14:.88,p.x,p.y)},{passive:false});
+map.addEventListener('pointerdown',e=>{
+  const p=point(e);
+  if(tool==='pan'){panStart={clientX:e.clientX,clientY:e.clientY,x:view.x,y:view.y};map.setPointerCapture?.(e.pointerId);return}
+  if(calibrating){calibration.push(p);if(calibration.length===2){const d=Math.hypot(calibration[1].x-calibration[0].x,calibration[1].y-calibration[0].y),known=Math.max(.1,+$('known').value||10);metresPerUnit=known/Math.max(.001,d);$('scaleText').textContent='Reference '+known.toFixed(1)+' m ✓ · scale calibrated';calibrating=false;drawCalibration();objects.filter(o=>o.type==='boundary').forEach(calcArea);scheduleSave()}return}
+  if(tool==='measure'){measurePts.push(p);if(measurePts.length===2){const d=Math.hypot(measurePts[1].x-measurePts[0].x,measurePts[1].y-measurePts[0].y);$('measureChip').textContent='Measure: '+(metresPerUnit?(d*metresPerUnit).toFixed(1)+' m':Math.round(d)+' units');measurePts=[]}return}
+  if(['boundary','zone','garden','pond','path'].includes(tool)){startDrawing(tool,p);return}
+  if(['tree','building'].includes(tool)){addSimple(tool,p);return}
+  if(tool==='select'&&e.target===map)select(null)
+});
+map.addEventListener('pointermove',e=>{if(tool==='pan'&&panStart){const r=map.getBoundingClientRect(),dx=(e.clientX-panStart.clientX)/r.width*view.w,dy=(e.clientY-panStart.clientY)/r.height*view.h;view.x=panStart.x-dx;view.y=panStart.y-dy;setView()}});
+map.addEventListener('pointerup',()=>{panStart=null;scheduleSave()});
+
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>choose(b.dataset.tool));
+document.querySelectorAll('.layerCheck').forEach(c=>c.onchange=render);
+$('surveyMode').onclick=()=>setMode('survey');$('designMode').onclick=()=>setMode('design');
+$('finishDraw').onclick=finishDrawing;$('cancelDraw').onclick=cancelDrawing;
+$('calibrate').onclick=()=>{calibration=[];calibrationLayer.innerHTML='';calibrating=true;choose('select');calibrating=true;$('status').textContent='Calibration: click two points with the known distance between them.'};
+$('zoomIn').onclick=()=>zoom(.8);$('zoomOut').onclick=()=>zoom(1.25);$('fitView').onclick=fit;
+$('year').oninput=()=>{$('yearLabel').textContent='Year '+$('year').value;render()};
+$('imageOpacity').oninput=e=>$('baseRotate').style.opacity=e.target.value;
+$('rotateImage').onclick=()=>{if($('lockImage').checked){$('status').textContent='Unlock the base image before rotating it.';return}imageRotation=(imageRotation+90)%360;updateBaseRotation();scheduleSave()};
+$('resetImage').onclick=()=>{imageRotation=0;$('imageOpacity').value=1;$('baseRotate').style.opacity=1;updateBaseRotation();fit();scheduleSave()};
+$('upload').onchange=e=>{
+  const f=e.target.files?.[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{snap();baseImageData=reader.result;world={w:img.naturalWidth,h:img.naturalHeight};view={x:0,y:0,w:world.w,h:world.h};$('map').setAttribute('viewBox','0 0 '+world.w+' '+world.h);$('photo').setAttribute('href',baseImageData);$('photo').setAttribute('width',world.w);$('photo').setAttribute('height',world.h);$('photo').style.display='block';$('demo').style.display='none';objects=[];selectedId=null;metresPerUnit=null;calibration=[];calibrationLayer.innerHTML='';render();$('status').textContent='Image loaded. Calibrate scale, then survey the existing land.';persist()};img.src=reader.result};reader.readAsDataURL(f)
+};
+$('demoBtn').onclick=()=>{baseImageData=null;world={w:1200,h:750};view={x:0,y:0,w:1200,h:750};$('photo').style.display='none';$('demo').style.display='block';fit();scheduleSave()};
+$('nameField').oninput=e=>{const o=objects.find(x=>x.id===selectedId);if(o){o.name=e.target.value||cfg[o.type].label;render()}};
+$('phaseField').onchange=e=>{const o=objects.find(x=>x.id===selectedId);if(o){o.phase=e.target.value;render()}};
+$('widthField').oninput=e=>{const o=objects.find(x=>x.id===selectedId);if(!o)return;if(o.type==='tree')o.radiusM=Math.max(.1,+e.target.value/2||2);else o.widthM=Math.max(.1,+e.target.value||1);render()};
+$('heightField').oninput=e=>{const o=objects.find(x=>x.id===selectedId);if(o?.type==='building'){o.heightM=Math.max(.1,+e.target.value||1);render()}};
+$('rotationField').oninput=e=>{const o=objects.find(x=>x.id===selectedId);if(o?.type==='building'){o.rotation=+e.target.value||0;render()}};
+$('deleteBtn').onclick=()=>{if(!selectedId)return;snap();objects=objects.filter(o=>o.id!==selectedId);selectedId=null;render()};
+$('duplicateBtn').onclick=()=>{const o=objects.find(x=>x.id===selectedId);if(!o)return;snap();const n=JSON.parse(JSON.stringify(o));n.id=uid();n.name=o.name+' copy';if(n.x!=null){n.x+=20;n.y+=20}if(n.points)n.points=n.points.map(p=>({x:p.x+20,y:p.y+20}));objects.push(n);selectedId=n.id;render()};
+$('undoBtn').onclick=()=>{if(!history.length)return;const p=JSON.parse(history.pop());objects=p.objects||[];metresPerUnit=p.metresPerUnit||null;world=p.world||world;imageRotation=p.imageRotation||0;view=p.view||view;workMode=p.workMode||workMode;selectedId=null;syncModeUI();updateBaseRotation();setView();render();scheduleSave()};
+$('mobileHandle').onclick=()=>{$('rightPanel').classList.toggle('open');$('mobileHandle').textContent=$('rightPanel').classList.contains('open')?'Object inspector ▼':'Object inspector ▲'};
+window.addEventListener('beforeunload',persist);
+
+syncModeUI();choose('select');$('yearLabel').textContent='Year '+$('year').value;restore();render();
 })();
 </script>
 </body>
