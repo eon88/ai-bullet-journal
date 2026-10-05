@@ -42,3 +42,14 @@
 - Refresh browser and confirm project + image restore.
 - Test zoom/pan and timeline.
 - Repeat on a phone-width viewport.
+
+
+## Precision geometry editing
+- [x] Drag an entire polygon/line as one object.
+- [x] Select an individual corner from the inspector.
+- [x] Nudge whole shapes or individual corners by a configurable step.
+- [x] Use metre-based nudging after scale calibration (e.g. 0.10 m).
+- [x] Add a new corner by inserting a midpoint.
+- [x] Remove a selected corner while preserving minimum valid geometry.
+- [x] Show live area and perimeter for selected polygons.
+- [x] Show live area/perimeter while drawing polygons.
