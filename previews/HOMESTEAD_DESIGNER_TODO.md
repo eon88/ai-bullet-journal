@@ -1,24 +1,24 @@
 # Permaculture Homestead Designer — Core UX Fix List
 
 ## Priority 1 — Make the canvas trustworthy
-- [ ] 1. Boundary and zone overlays must not block placing objects inside them.
-- [ ] 2. Separate Existing vs Planned design modes; new objects should not appear "missing" at Year 0.
-- [ ] 3. Add autosave + project restore so refresh does not destroy the design.
-- [ ] 4. Add zoom, pan, reset view, and fit-to-land controls.
+- [x] 1. Boundary and zone overlays no longer block placing objects inside them.
+- [x] 2. Added separate Survey / Design modes with Existing vs Planned phases.
+- [x] 3. Added autosave + restore. Project geometry/settings use local storage; large drone images use IndexedDB.
+- [x] 4. Added zoom, mouse-wheel zoom, pan, reset/fit controls.
 
 ## Priority 2 — Make geometry genuinely editable
-- [ ] 5. Add resize/rotate controls and real dimensions for editable objects.
-- [ ] 6. Use editable polygon/line geometry for gardens, ponds, zones, boundaries, paths and other land systems.
-- [ ] 7. Replace double-click-to-finish drawing with an explicit Finish/Cancel drawing workflow.
-- [ ] 8. Add vertex editing for polygons and lines.
-- [ ] 9. Make the inspector available on mobile as a bottom/slide-out panel.
+- [x] 5. Added real dimension controls for trees/buildings plus building rotation.
+- [x] 6. Gardens, ponds, zones and boundaries use custom polygons; paths use lines.
+- [x] 7. Replaced double-click finishing with explicit Finish / Cancel drawing controls.
+- [x] 8. Added draggable polygon/line vertex handles.
+- [x] 9. Mobile inspector now becomes a bottom sheet instead of disappearing.
 
 ## Priority 3 — Clean up the experience
-- [ ] 10. Simplify timeline behaviour until real lifecycle simulation exists.
-- [ ] 11. Improve scale calibration with a visible measurement line and label.
-- [ ] 12. Add base-image controls: opacity, rotate, fit/reset, lock.
-- [ ] 13. Remove or replace placeholder/non-useful dashboard UI.
-- [ ] 14. Re-test full first-time workflow on desktop and mobile.
+- [x] 10. Timeline simplified to phase visibility rather than pretending to simulate full biology.
+- [x] 11. Calibration now shows a visible measurement line, value and confirmation.
+- [x] 12. Added base-image opacity, rotation safeguards, fit/reset and lock controls.
+- [x] 13. Removed the placeholder object/water/garden counters and "Later intelligence" roadmap panel; replaced them with useful project counts and contextual editing.
+- [ ] 14. Full live first-time workflow regression test on desktop + mobile.
 
 ## Target workflow
 1. Upload or open land image.
@@ -29,3 +29,16 @@
 6. Add future systems with editable real geometry.
 7. Save automatically.
 8. Review by phase / year.
+
+## Next test pass
+- Upload a real drone image.
+- Calibrate against a known real-world dimension.
+- Trace boundary.
+- Add existing house/trees/access.
+- Switch to Design mode.
+- Draw garden, pond, zone and path inside the boundary.
+- Edit polygon vertices.
+- Resize/rotate building.
+- Refresh browser and confirm project + image restore.
+- Test zoom/pan and timeline.
+- Repeat on a phone-width viewport.
